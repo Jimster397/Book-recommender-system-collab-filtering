@@ -4,7 +4,7 @@ artifacts_config:
 data_ingestion_config:
   source_urls:
     books: "https://github.com/Jimster397/Book-recommender-system-collab-filtering/releases/download/v1.0/BX-Books.csv"
-    ratings: "https://github.com/Jimster397/Book-recommender-system-collab-filtering/releases/download/v1.0/BX-Ratings.csv"
+    ratings: "https://github.com/Jimster397/Book-recommender-system-collab-filtering/releases/download/v1.0/BX-Book-Ratings.csv"
     users: "https://github.com/Jimster397/Book-recommender-system-collab-filtering/releases/download/v1.0/BX-Users.csv"
   
   root_dir: artifacts/data_ingestion
