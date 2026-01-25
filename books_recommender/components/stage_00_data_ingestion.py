@@ -33,7 +33,7 @@ class DataIngestion:
             
             # Download each CSV file
             for file_type, url in self.data_ingestion_config.source_urls.items():
-                file_name = f"BX-{file_type.capitalize()}.csv"
+                file_name = url.split('/')[-1]
                 file_path = os.path.join(raw_data_dir, file_name)
                 
                 logging.info(f"Downloading {file_type} data from {url}")

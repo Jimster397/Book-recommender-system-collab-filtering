@@ -11,3 +11,11 @@ class DataIngestionConfig:
     ingested_dir: str
 
 
+@dataclass
+class DataValidationConfig:
+    """Configuration for data validation stage"""
+    clean_data_dir: str
+    serialized_objects_dir: str
+    books_csv_file: str
+    ratings_csv_file: str
+    users_csv_file: str

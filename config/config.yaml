@@ -11,3 +11,11 @@ data_ingestion_config:
   local_data_dir: artifacts/data_ingestion/dataset
   raw_data_dir: artifacts/data_ingestion/raw_data
   ingested_dir: artifacts/data_ingestion/ingested_data
+
+
+data_validation_config:
+  clean_data_dir: clean_data
+  serialized_objects_dir: serialized_objects
+  books_csv_file: BX-Books.csv
+  ratings_csv_file: BX-Book-Ratings.csv
+  users_csv_file: BX-Users.csv

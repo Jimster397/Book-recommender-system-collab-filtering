@@ -5,7 +5,7 @@ from books_recommender.logger import log
 from books_recommender.constant import *
 from books_recommender.utils.util import read_yaml_file
 from books_recommender.exception.exception_handler import AppException
-from books_recommender.entity.config_entity import DataIngestionConfig
+from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig
 
 
 
@@ -33,6 +33,33 @@ class AppConfiguration:
             )
 
             logging.info(f"Data Ingestion Config: {response}")
+            return response
+            
+        except Exception as e:
+            raise AppException(e, sys) from e
+        
+
+    def get_data_validation_config(self) -> DataValidationConfig:
+        try:
+            config = self.configs_info['data_validation_config']
+            raw_data_dir = self.configs_info['data_ingestion_config']['raw_data_dir']
+            
+            books_csv_path = os.path.join(raw_data_dir, config['books_csv_file'])
+            ratings_csv_path = os.path.join(raw_data_dir, config['ratings_csv_file'])
+            users_csv_path = os.path.join(raw_data_dir, config['users_csv_file'])
+            
+            clean_data_dir = os.path.join('artifacts/data_ingestion', config['clean_data_dir'])
+            serialized_objects_dir = os.path.join('artifacts/data_ingestion', config['serialized_objects_dir'])
+            
+            response = DataValidationConfig(
+                clean_data_dir=clean_data_dir,
+                serialized_objects_dir=serialized_objects_dir,
+                books_csv_file=books_csv_path,
+                ratings_csv_file=ratings_csv_path,
+                users_csv_file=users_csv_path
+            )
+
+            logging.info(f"Data Validation Config: {response}")
             return response
             
         except Exception as e:
