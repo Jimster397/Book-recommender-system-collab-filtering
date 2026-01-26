@@ -19,3 +19,10 @@ class DataValidationConfig:
     books_csv_file: str
     ratings_csv_file: str
     users_csv_file: str
+
+
+@dataclass
+class DataTransformationConfig:
+    """Configuration for data transformation stage"""
+    clean_data_file_path: str
+    transformed_data_dir: str

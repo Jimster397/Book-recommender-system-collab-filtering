@@ -5,7 +5,7 @@ from books_recommender.logger import log
 from books_recommender.constant import *
 from books_recommender.utils.util import read_yaml_file
 from books_recommender.exception.exception_handler import AppException
-from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig
+from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig
 
 
 
@@ -20,10 +20,8 @@ class AppConfiguration:
     
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         try:
-            # Get the data ingestion section from config
             config = self.configs_info['data_ingestion_config']
         
-            # Create the config object directly from the YAML values
             response = DataIngestionConfig(
                 source_urls=config['source_urls'],
                 root_dir=config['root_dir'],
@@ -52,14 +50,42 @@ class AppConfiguration:
             serialized_objects_dir = os.path.join('artifacts/data_ingestion', config['serialized_objects_dir'])
             
             response = DataValidationConfig(
-                clean_data_dir=clean_data_dir,
-                serialized_objects_dir=serialized_objects_dir,
-                books_csv_file=books_csv_path,
-                ratings_csv_file=ratings_csv_path,
-                users_csv_file=users_csv_path
+                clean_data_dir = clean_data_dir,
+                serialized_objects_dir = serialized_objects_dir,
+                books_csv_file = books_csv_path,
+                ratings_csv_file = ratings_csv_path,
+                users_csv_file = users_csv_path
             )
 
             logging.info(f"Data Validation Config: {response}")
+            return response
+            
+        except Exception as e:
+            raise AppException(e, sys) from e
+        
+    
+    def get_data_transformation_config(self) -> DataTransformationConfig:
+        try:
+            config = self.configs_info['data_transformation_config']
+            validation_config = self.configs_info['data_validation_config']
+            
+            clean_data_file_path = os.path.join(
+                'artifacts/data_ingestion',
+                validation_config['clean_data_dir'],
+                'clean_data.csv'
+            )
+            
+            transformed_data_dir = os.path.join(
+                'artifacts/data_ingestion',
+                config['transformed_data_dir']
+            )
+            
+            response = DataTransformationConfig(
+                clean_data_file_path=clean_data_file_path,
+                transformed_data_dir=transformed_data_dir
+            )
+
+            logging.info(f"Data Transformation Config: {response}")
             return response
             
         except Exception as e:
