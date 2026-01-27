@@ -5,7 +5,7 @@ from books_recommender.logger import log
 from books_recommender.constant import *
 from books_recommender.utils.util import read_yaml_file
 from books_recommender.exception.exception_handler import AppException
-from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig
+from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
 
 
 
@@ -24,10 +24,7 @@ class AppConfiguration:
         
             response = DataIngestionConfig(
                 source_urls=config['source_urls'],
-                root_dir=config['root_dir'],
-                local_data_dir=config['local_data_dir'],
-                raw_data_dir=config['raw_data_dir'],
-                ingested_dir=config['ingested_dir']
+                raw_data_dir=config['raw_data_dir']
             )
 
             logging.info(f"Data Ingestion Config: {response}")
@@ -81,11 +78,44 @@ class AppConfiguration:
             )
             
             response = DataTransformationConfig(
-                clean_data_file_path=clean_data_file_path,
-                transformed_data_dir=transformed_data_dir
+                clean_data_file_path = clean_data_file_path,
+                transformed_data_dir = transformed_data_dir
             )
 
             logging.info(f"Data Transformation Config: {response}")
+            return response
+            
+        except Exception as e:
+            raise AppException(e, sys) from e
+
+
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        try:
+            config = self.configs_info['model_trainer_config']
+            validation_config = self.configs_info['data_validation_config']
+            
+            # Build full path to book_pivot.pkl
+            transformed_data_file_dir = os.path.join(
+                'artifacts/data_ingestion',
+                validation_config['serialized_objects_dir'],
+                'book_pivot.pkl'
+            )
+            
+            # Directory to save trained model
+            trained_model_dir = os.path.join(
+                'artifacts/data_ingestion',
+                config['trained_model_dir']
+            )
+            
+            trained_model_name = config['trained_model_name']
+            
+            response = ModelTrainerConfig(
+                transformed_data_file_dir=transformed_data_file_dir,
+                trained_model_dir=trained_model_dir,
+                trained_model_name=trained_model_name
+            )
+            
+            logging.info(f"Model Trainer Config: {response}")
             return response
             
         except Exception as e:
