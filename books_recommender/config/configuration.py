@@ -5,7 +5,7 @@ from books_recommender.logger import log
 from books_recommender.constant import *
 from books_recommender.utils.util import read_yaml_file
 from books_recommender.exception.exception_handler import AppException
-from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
+from books_recommender.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig, ModelRecommendationConfig
 
 
 
@@ -118,5 +118,41 @@ class AppConfiguration:
             logging.info(f"Model Trainer Config: {response}")
             return response
             
+        except Exception as e:
+            raise AppException(e, sys) from e
+        
+
+    def get_recommendation_config(self) -> ModelRecommendationConfig:
+        try:
+            model_trainer_config = self.configs_info['model_trainer_config']
+            data_validation_config = self.configs_info['data_validation_config']
+            
+            trained_model_path = os.path.join(
+                'artifacts/data_ingestion',
+                model_trainer_config['trained_model_dir'],
+                model_trainer_config['trained_model_name']
+            )
+            
+            book_pivot_serialized_objects = os.path.join(
+                'artifacts/data_ingestion',
+                data_validation_config['serialized_objects_dir'],
+                'book_pivot.pkl'
+            )
+            
+            final_rating_serialized_objects = os.path.join(
+                'artifacts/data_ingestion',
+                data_validation_config['serialized_objects_dir'],
+                'final_rating.pkl'
+            )
+        
+            response = ModelRecommendationConfig(
+                trained_model_path=trained_model_path,
+                book_pivot_serialized_objects=book_pivot_serialized_objects,
+                final_rating_serialized_objects=final_rating_serialized_objects
+            )
+
+            logging.info(f"Recommendation Config: {response}")
+            return response
+
         except Exception as e:
             raise AppException(e, sys) from e

@@ -32,3 +32,11 @@ class ModelTrainerConfig:
     transformed_data_file_dir: str
     trained_model_dir: str
     trained_model_name: str
+
+
+@dataclass
+class ModelRecommendationConfig:
+    """Configuration for model recommendation stage"""
+    book_pivot_serialized_objects: str
+    final_rating_serialized_objects: str
+    trained_model_path: str
