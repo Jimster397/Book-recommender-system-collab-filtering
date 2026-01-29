@@ -94,26 +94,139 @@ class Recommendation:
         except Exception as e:
             raise AppException(e, sys) from e
         
-    
+
+
 if __name__ == "__main__":
-        st.header('Book Recommender System')
-        st.text("This is a collaborative filtering based recommendation system!")
-
-        obj = Recommendation()
-
-        #Training
-        if st.button('Train Recommender System'):
-            obj.train_engine()
-
-        book_names = pickle.load(open('artifacts/data_ingestion/serialized_objects/book_names.pkl', 'rb'))
-        selected_books = st.selectbox(
-            "Type or select a book from the dropdown",
-            book_names
-        )
-
-        #recommendation
-        if st.button('Show Recommendation'):
-            obj.recommendation_engine(selected_books)
-
-
+    # Page config (MUST be first)
+    st.set_page_config(
+        page_title="Book Recommender System",
+        page_icon="📚",
+        layout="wide"
+    )
+    
+    # Custom CSS (goes right after page config)
+    st.markdown("""
+        <style>
+        /* Import fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;600&display=swap');
         
+        /* Main app background */
+        .stApp {
+            background-color: #1a1a2e;  /* Dark navy */
+        }
+
+        [data-testid="stAppViewContainer"] {
+            background-color: #1a1a2e;  /* Dark navy */
+        }
+
+        /* Make all text white for dark background */
+        p, div, span, label {
+            color: #ffffff !important;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff !important;
+        }
+                
+        
+        /* Title styling */
+        h1 {
+            color: #1a1a2e;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 3rem;
+        }
+        
+        /* Subtitle styling */
+        h3 {
+            color: #16213e;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            font-style: italic;
+            font-weight: 400;
+        }
+        
+        /* Subheader styling */
+        h2 {
+            color: #0f4c75;
+            font-family: 'Roboto', sans-serif;
+            border-bottom: 3px solid #3282b8;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        /* Caption text */
+        .stCaption {
+            color: #546e7a;
+            font-size: 14px;
+        }
+        
+        /* Button styling */
+        .stButton>button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .stButton>button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        /* Selectbox styling */
+        .stSelectbox label {
+            color: #1a1a2e;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .stSelectbox > div > div {
+            border-radius: 10px;
+            border: 2px solid #3282b8;
+        }
+        
+        /* Horizontal line */
+        hr {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #3282b8, transparent);
+            margin: 30px 0;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # Title with styling
+    st.title("Book Recommender System")
+    st.markdown("---")
+    
+    obj = Recommendation()
+
+    # Training section
+    st.subheader("Model Training")
+    st.caption("Click below to train or retrain the recommendation model")
+    if st.button('Train Recommender System'):
+        obj.train_engine()
+    
+    st.markdown("---")
+    
+    # Recommendation section
+    st.subheader("Get Book Recommendations")
+    st.caption("Select a book you enjoyed, and we'll suggest similar titles")
+    
+    book_names = pickle.load(open('artifacts/data_ingestion/serialized_objects/book_names.pkl', 'rb'))
+    
+    selected_books = st.selectbox(
+        "Choose a book from the dropdown",
+        book_names
+    )
+
+    if st.button('Show Recommendations'):
+        obj.recommendation_engine(selected_books)
