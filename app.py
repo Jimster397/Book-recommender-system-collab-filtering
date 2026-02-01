@@ -97,14 +97,12 @@ class Recommendation:
 
 
 if __name__ == "__main__":
-    # Page config (MUST be first)
     st.set_page_config(
         page_title="Book Recommender System",
         page_icon="📚",
         layout="wide"
     )
     
-    # Custom CSS (goes right after page config)
     st.markdown("""
         <style>
         /* Import fonts */
@@ -203,13 +201,11 @@ if __name__ == "__main__":
         </style>
     """, unsafe_allow_html=True)
     
-    # Title with styling
     st.title("Book Recommender System")
     st.markdown("---")
     
     obj = Recommendation()
 
-    # Training section
     st.subheader("Model Training")
     st.caption("Click below to train or retrain the recommendation model")
     if st.button('Train Recommender System'):
@@ -217,7 +213,7 @@ if __name__ == "__main__":
     
     st.markdown("---")
     
-    # Recommendation section
+
     st.subheader("Get Book Recommendations")
     st.caption("Select a book you enjoyed, and we'll suggest similar titles")
     
