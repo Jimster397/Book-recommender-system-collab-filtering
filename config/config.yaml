@@ -28,3 +28,7 @@ model_trainer_config:
 
 recommendation_config:
   poster_api_url: https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US
+
+
+evaluation_config:
+ evaluation_output: evaluation_output

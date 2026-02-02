@@ -40,3 +40,13 @@ class ModelRecommendationConfig:
     book_pivot_serialized_objects: str
     final_rating_serialized_objects: str
     trained_model_path: str
+
+
+
+@dataclass
+class ModelOutputConfig:
+    """Configuration for model output stage"""
+    book_pivot_serialized_objects: str
+    final_rating_serialized_objects: str
+    trained_model_path: str
+    evaluation_output: str
