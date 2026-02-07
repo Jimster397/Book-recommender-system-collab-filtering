@@ -8,13 +8,30 @@ A collaborative filtering-based book recommendation system built with Python, St
 
 ---
 
+## Live Demo
+
+**Application URL**: "http://3.133.120.208:8501"
+
+---
+
+
+## Screenshots
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Book Recommendations
+![Recommendations](screenshots/recommendations.png)
+
+
 ## Project Overview
 
 This project implements an end-to-end machine learning pipeline for book recommendations using collaborative filtering. The system analyzes user rating patterns to suggest similar books based on what other readers enjoyed.
 
 ### Key Features
-- **Automated Data Pipeline**: Download, validate, transform, and train in one flow
+- **Automated Data Pipeline**: Download, validate, transform, train, and evaluate in one flow
 - **Collaborative Filtering**: Uses KNN algorithm to find similar books
+- **Model Evaluation**: Recall @10 metric for performance tracking
 - **Web Interface**: User-friendly Streamlit app for recommendations
 - **Production-Ready**: Comprehensive logging, error handling, and configuration management
 - **Dockerized**: Easy deployment with Docker containers
@@ -33,6 +50,8 @@ Stage 2: Data Transformation
     ↓
 Stage 3: Model Training
     ↓
+Stage 4: Model Evaluation
+    ↓
 Web Application (Streamlit)
 ```
 
@@ -44,13 +63,15 @@ Book-recommender-system-collab-filtering/
 │       ├── raw_data/              # Downloaded CSV files
 │       ├── clean_data/            # Cleaned datasets
 │       ├── serialized_objects/    # Pickled objects
-│       └── trained_model/         # Trained KNN model
+│       ├── trained_model/         # Trained KNN model
+│       └── evaluation_output/     # Evaluation metrics
 ├── books_recommender/             # Main package
 │   ├── components/                # Pipeline stages
 │   │   ├── stage_00_data_ingestion.py
 │   │   ├── stage_01_data_validation.py
 │   │   ├── stage_02_data_transformation.py
-│   │   └── stage_03_model_trainer.py
+│   │   ├── stage_03_model_trainer.py
+│   │   └── stage_04_model_evaluation.py
 │   ├── config/
 │   │   └── configuration.py       # Configuration manager
 │   ├── constant/
@@ -74,6 +95,61 @@ Book-recommender-system-collab-filtering/
 ├── requirements.txt               # Python dependencies
 └── README.md                      # This file
 ```
+
+---
+
+## Model Performance
+
+### Baseline Metrics
+
+**Recall @10: 4.09%**
+
+**Evaluation Methodology**
+- Train/test split: 50/50 per user
+- Relevant threshold: Rating >= 8
+- Aggregated recommendations from all highly-rated training books
+- Evaluated on 693 users
+
+**Dataset Statistics**
+- Training samples: 29,697
+- Test samples: 30,153
+- Total users: 888
+- Total books: 742
+
+### Performance Details
+
+**Algorithm**: K-Nearest Neighbors (Brute-force)
+- Similarity metric: Distance-based (Euclidean via sparse matrix)
+- Neighbors considered: 11 (returns top 10 recommendations)
+- Recommendation aggregation: Frequency-based voting
+
+### Challenges and Limitations
+
+1. **Sparse Data Matrix**
+   - Coverage: 9% (59,850 ratings / 658,896 possible)
+   - Limited user-book interactions
+
+2. **Strict Data Filtering**
+   - Books: 50+ ratings required
+   - Users: 200+ ratings required
+   - 95% of original data filtered out
+
+3. **Dataset Size**
+   - Original: 1.1M ratings
+   - After filtering: 59,850 ratings
+
+### Future Improvements
+
+**Planned Enhancements**
+- Implement matrix factorization (SVD/ALS)
+- Relax filtering criteria to retain more data
+- Hybrid content-collaborative approach
+- Expected improvement: 10-15% Recall @10
+
+**Additional Metrics**
+- Precision @10
+- Mean Average Precision (MAP)
+- Normalized Discounted Cumulative Gain (NDCG)
 
 ---
 
@@ -112,6 +188,15 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+This will run all pipeline stages:
+- Stage 0: Data Ingestion
+- Stage 1: Data Validation
+- Stage 2: Data Transformation
+- Stage 3: Model Training
+- Stage 4: Model Evaluation
+
+Evaluation results saved to: `artifacts/data_ingestion/evaluation_output/evaluation_metrics.json`
 
 5. **Run the web application**
 ```bash
@@ -280,14 +365,7 @@ After filtering:
 - **Data Processing**: Pandas, NumPy
 - **ML Libraries**: Scikit-learn, SciPy
 - **Deployment**: Docker, AWS EC2
-
----
-
-## Model Performance
-
-- **Algorithm**: Brute-force KNN
-- **Similarity Metric**: Distance-based (cosine similarity via sparse matrix)
-- **Recommendations**: Top 5 similar books
+- **Evaluation**: Custom Recall @10 metric
 
 ---
 
@@ -304,7 +382,7 @@ After filtering:
 
 All operations are logged in the `logs/` directory with timestamps:
 ```
-logs/log_2026-01-26-20-01-40.log
+logs/log_2026-02-06-21-55-34.log
 ```
 
 ---
@@ -364,4 +442,4 @@ For questions or feedback, please open an issue on GitHub.
 
 ---
 
-**Built with passion using Python and Streamlit**
+**Built with Python and Streamlit**

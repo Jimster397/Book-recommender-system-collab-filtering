@@ -4,6 +4,8 @@ import pickle
 import numpy as np
 import pandas as pd
 import logging
+import json
+from datetime import datetime
 from books_recommender.logger import log
 from books_recommender.config.configuration import AppConfiguration
 from books_recommender.exception.exception_handler import AppException
@@ -98,6 +100,27 @@ class ModelEvaluator:
                     recall_scores.append(recall)
             average_recall = sum(recall_scores) / len(recall_scores)
             logging.info(f"Recall @10: {average_recall}")
+
+            # Save evaluation results
+
+            os.makedirs(self.evaluation_config.evaluation_output, exist_ok=True)
+
+            results = {
+                "recall_at_10": average_recall,
+                "num_users_evaluated": len(recall_scores),
+                "train_size": len(train_data),
+                "test_size": len(test_data),
+                "evaluation_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "rating_threshold": 8,
+                "num_recommendations": 10
+            }
+
+            output_file = os.path.join(self.evaluation_config.evaluation_output, 'evaluation_metrics.json')
+
+            with open(output_file, 'w') as f:
+                json.dump(results, f, indent = 4)
+
+            logging.info(f"Saved evaluation results to {output_file}")
 
         except Exception as e:
             raise AppException(e, sys) from e 

@@ -1,0 +1,9 @@
+{
+    "recall_at_10": 0.04092855997617902,
+    "num_users_evaluated": 693,
+    "train_size": 29697,
+    "test_size": 30153,
+    "evaluation_date": "2026-02-06 21:55:34",
+    "rating_threshold": 8,
+    "num_recommendations": 10
+}
